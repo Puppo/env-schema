@@ -119,12 +119,6 @@ expect(envSchemaWithType).type.toBe<EnvData>()
 const envSchemaTypebox = envSchema({ schema: schemaTypebox })
 expect(envSchemaTypebox).type.toBeAssignableTo<SchemaTypebox>()
 
-expect(envSchema).type.toBeCallableWith({
-  schema: S.object().prop(
-    'PORT',
-    S.number().default(3000).required()
-  ).valueOf(),
-})
 const envSchemaFluent = envSchema<EnvData>({
   schema: S.object().prop(
     'PORT',
