@@ -8,6 +8,7 @@ import envSchema, {
 } from '.'
 import Ajv, { KeywordDefinition, JSONSchemaType } from 'ajv'
 import { Static, Type } from 'typebox'
+import S from 'fluent-json-schema'
 
 interface EnvData {
   PORT: number;
@@ -45,6 +46,11 @@ const optWithSchemaTypebox: EnvSchemaOpt = {
   schema: schemaTypebox,
 }
 expect(optWithSchemaTypebox).type.toBe<EnvSchemaOpt>()
+
+const optWithFluentSchema = {
+  schema: S.object().prop('PORT', S.number().default(3000).required()).valueOf(),
+}
+expect(optWithFluentSchema).type.toBeAssignableTo<EnvSchemaOpt>()
 
 const optWithSchemaWithType: EnvSchemaOpt<EnvData> = {
   schema: schemaWithType,
@@ -110,8 +116,22 @@ expect<EnvSchemaOpt>()
 const envSchemaWithType = envSchema({ schema: schemaWithType })
 expect(envSchemaWithType).type.toBe<EnvData>()
 
-const envSchemaTypebox = envSchema<SchemaTypebox>({ schema: schemaTypebox })
-expect(envSchemaTypebox).type.toBe<SchemaTypebox>()
+const envSchemaTypebox = envSchema({ schema: schemaTypebox })
+expect(envSchemaTypebox).type.toBeAssignableTo<SchemaTypebox>()
+
+expect(envSchema).type.toBeCallableWith({
+  schema: S.object().prop(
+    'PORT',
+    S.number().default(3000).required()
+  ).valueOf(),
+})
+const envSchemaFluent = envSchema<EnvData>({
+  schema: S.object().prop(
+    'PORT',
+    S.number().default(3000).required()
+  ).valueOf(),
+})
+expect(envSchemaFluent).type.toBe<EnvData>()
 
 expect(keywords.separator).type.toBe<KeywordDefinition>()
 expect(envSchema.keywords.separator).type.toBe<KeywordDefinition>()
