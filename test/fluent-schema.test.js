@@ -24,4 +24,17 @@ function run () {
       PORT: '44'
     })
   })
+
+  test('simple object - fluent-json-schema with valueOf', t => {
+    const options = {
+      schema: S.object().prop('PORT', S.string()).valueOf(),
+      data: {
+        PORT: '44'
+      }
+    }
+
+    makeTest(t, options, true, {
+      PORT: '44'
+    })
+  })
 }
